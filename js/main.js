@@ -60,10 +60,11 @@ require([
            Layer lookup by title
            ===================================================== */
         const layerIndex = {
-            layerA: webmap.layers.find(l => l.title === "Overall Impact (Day 1)"),
-            layerB: webmap.layers.find(l => l.title === "Overall Impact (Day 2)"),
-            layerC: webmap.layers.find(l => l.title === "Overall Impact (Day 3)"),
-            layerD: webmap.layers.find(l => l.title === "Overall Impact (Days 1-3)")
+            layerA: webmap.layers.find(l => l.title === "Overall Impact (Days 1-3)"),
+            layerB: webmap.layers.find(l => l.title === "Overall Impact (Day 1)"),
+            layerC: webmap.layers.find(l => l.title === "Overall Impact (Day 2)"),
+            layerD: webmap.layers.find(l => l.title === "Overall Impact (Day 3)"),
+            
         };
 
         /* =====================================================
