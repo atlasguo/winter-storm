@@ -1,3 +1,21 @@
+/* =====================================================
+   Entry overlay interaction
+   ===================================================== */
+
+document.addEventListener("DOMContentLoaded", () => {
+    const overlay = document.getElementById("entryOverlay");
+    const button = document.getElementById("confirmEntry");
+
+    button.addEventListener("click", () => {
+        overlay.style.display = "none";
+        document.body.classList.remove("locked");
+    });
+});
+
+/* =====================================================
+   ArcGIS map initialization
+   ===================================================== */
+
 require([
     "esri/WebMap",
     "esri/views/MapView",
@@ -18,9 +36,6 @@ require([
     SpatialReference
 ) {
 
-    /* =====================================================
-       Web map and view initialization
-       ===================================================== */
     const webmap = new WebMap({
         portalItem: {
             id: "6cf23948d93b4b5c9920919c58a6105a"
@@ -37,9 +52,8 @@ require([
 
     view.when(async () => {
 
-        /* =====================================================
-           View constraints (CONUS extent)
-           ===================================================== */
+        /* Geographic constraints */
+
         const conusExtent = new Extent({
             xmin: -13884991,
             ymin: 2870341,
@@ -56,20 +70,17 @@ require([
 
         view.goTo(conusExtent);
 
-        /* =====================================================
-           Layer lookup by title
-           ===================================================== */
+        /* Layer references */
+
         const layerIndex = {
             layerA: webmap.layers.find(l => l.title === "Overall Impact (Days 1-3)"),
             layerB: webmap.layers.find(l => l.title === "Overall Impact (Day 1)"),
             layerC: webmap.layers.find(l => l.title === "Overall Impact (Day 2)"),
-            layerD: webmap.layers.find(l => l.title === "Overall Impact (Day 3)"),
-            
+            layerD: webmap.layers.find(l => l.title === "Overall Impact (Day 3)")
         };
 
-        /* =====================================================
-           Time parsing utilities
-           ===================================================== */
+        /* Time parsing utilities */
+
         function parseZulu(str) {
             const [z, d] = str.split(" ");
             const hour = parseInt(z.replace("Z", ""), 10);
@@ -89,6 +100,8 @@ require([
             }).replace(",", "") + " ET";
         }
 
+        /* Fetch valid time range for a layer */
+
         async function fetchValidTime(layer) {
             const q = layer.createQuery();
             q.where = "1=1";
@@ -103,53 +116,45 @@ require([
             return `${formatET(parseZulu(a))} – ${formatET(parseZulu(b))}`;
         }
 
-        /* =====================================================
-           Inject time labels into radio panel
-           ===================================================== */
+        /* Populate layer time labels */
+
         for (const [key, layer] of Object.entries(layerIndex)) {
             const label = document.querySelector(
                 `#controlPanel label[data-key="${key}"] .label-text`
             );
-
             const time = await fetchValidTime(layer);
             label.insertAdjacentHTML("beforeend", `<span class="time">${time}</span>`);
         }
 
-        /* =====================================================
-           Layer visibility control
-           ===================================================== */
-        Object.keys(layerIndex).forEach(key => {
-            layerIndex[key].visible = (key === "layerA");
+        /* Default visible layer */
+
+        Object.keys(layerIndex).forEach(k => {
+            layerIndex[k].visible = (k === "layerA");
         });
 
+        /* Layer visibility toggle */
+
         document.querySelectorAll("input[name='layerGroup']").forEach(radio => {
-            radio.addEventListener("change", event => {
-                const key = event.target.value;
-                Object.values(layerIndex).forEach(layer => layer.visible = false);
-                layerIndex[key].visible = true;
+            radio.addEventListener("change", e => {
+                Object.values(layerIndex).forEach(l => l.visible = false);
+                layerIndex[e.target.value].visible = true;
             });
         });
 
-        /* =====================================================
-           UI widgets
-           ===================================================== */
-        const radioExpand = new Expand({
+        /* UI widgets */
+
+        view.ui.add(new Expand({
             view,
             content: document.getElementById("controlPanel"),
             expanded: true,
-            expandIconClass: "esri-icon-collection"
-        });
+            expandIconClass: "esri-icon-layers"
+        }), "top-left");
 
-        view.ui.add(radioExpand, "top-left");
-
-        view.ui.add(
-            new Expand({
-                view,
-                content: new Legend({ view }),
-                expanded: true
-            }),
-            "bottom-right"
-        );
+        view.ui.add(new Expand({
+            view,
+            content: new Legend({ view }),
+            expanded: true
+        }), "bottom-right");
 
         view.ui.add(new Search({ view }), { position: "top-right", index: 0 });
         view.ui.add(new Zoom({ view }), { position: "top-right", index: 1 });

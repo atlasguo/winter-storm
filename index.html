@@ -16,7 +16,92 @@
     <link rel="stylesheet" href="css/style.css" />
 </head>
 
-<body>
+<body class="locked">
+
+    <!-- =====================================================
+         Entry overlay: impact legend and data disclaimer
+         Displayed on initial page load
+         ===================================================== -->
+    <div id="entryOverlay">
+        <div class="overlayPanel">
+
+            <h1>Overall Winter Weather Impacts</h1>
+
+            <!-- Impact legend -->
+            <div class="impactList">
+
+                <div class="impactRow">
+                    <div class="impactColor impact-winter"></div>
+                    <div class="impactLabel">Winter Weather Area</div>
+                    <div class="impactDesc">
+                        Expect winter weather conditions. Winter driving conditions. Drive carefully.
+                    </div>
+                </div>
+
+                <div class="impactRow">
+                    <div class="impactColor impact-minor"></div>
+                    <div class="impactLabel">Minor Impacts</div>
+                    <div class="impactDesc">
+                        Expect a few inconveniences to daily life. Winter driving conditions. Use caution while driving.
+                    </div>
+                </div>
+
+                <div class="impactRow">
+                    <div class="impactColor impact-moderate"></div>
+                    <div class="impactLabel">Moderate Impacts</div>
+                    <div class="impactDesc">
+                        Expect disruptions to daily life. Hazardous driving conditions.
+                        Closures and disruptions to infrastructure may occur.
+                    </div>
+                </div>
+
+                <div class="impactRow">
+                    <div class="impactColor impact-major"></div>
+                    <div class="impactLabel">Major Impacts</div>
+                    <div class="impactDesc">
+                        Expect considerable disruptions to daily life.
+                        Dangerous or impossible driving conditions. Avoid travel if possible.
+                        Widespread closures and disruptions to infrastructure may occur.
+                    </div>
+                </div>
+
+                <div class="impactRow">
+                    <div class="impactColor impact-extreme"></div>
+                    <div class="impactLabel">Extreme Impacts</div>
+                    <div class="impactDesc">
+                        Expect substantial disruptions to daily life.
+                        Extremely dangerous or impossible driving conditions. Travel is not advised.
+                        Extensive and widespread closures and disruptions to infrastructure may occur.
+                        Life-saving actions may be needed.
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Data source and disclaimer -->
+            <div class="impactNote">
+                Data Source: NOAA
+                <a href="https://www.wpc.ncep.noaa.gov/wwd/wssi/wssi.php" target="_blank">
+                    Winter Storm Severity Index
+                </a> (WSSI).
+                This is an impact-based index indicating potential societal disruption and does not replace
+                a full weather forecast. Please follow updates from your local
+                <a href="https://verification.nws.noaa.gov/services/public/NWSOffices.html" target="_blank">
+                    National Weather Service offices
+                </a>.
+                <br /><br />
+                This map was developed by Atlas Guo
+                (<a href="https://cartoguophy.com" target="_blank">CartoGuophy.com</a>) in 2026
+                and is not an official product of NOAA.
+                <br /><br />
+                This map is optimized for viewing on large screens.
+            </div>
+
+            <!-- Acknowledgement button -->
+            <button id="confirmEntry">I Understand and Enter</button>
+
+        </div>
+    </div>
 
     <!-- =====================================================
          Layer selection panel (radio buttons)
@@ -48,7 +133,7 @@
             <label data-key="layerD">
                 <input type="radio" name="layerGroup" value="layerD" />
                 <span class="label-text">
-                    <span class="label-day">Days 3: </span>
+                    <span class="label-day">Day 3: </span>
                 </span>
             </label>
 
@@ -58,21 +143,8 @@
     <!-- Map container -->
     <div id="viewDiv"></div>
 
-    <!-- =====================================================
-         Footer
-         ===================================================== -->
-    <div id="footerBar">
-        <span>
-            Optimized for Desktop Viewing&nbsp;&nbsp;•&nbsp;&nbsp;Data Source: NOAA <a
-                href="https://www.wpc.ncep.noaa.gov/wwd/wssi/wssi.php" target="_blank">Winter Storm
-                Severity Index</a>&nbsp;&nbsp;•&nbsp;&nbsp;Map by Atlas Guo (<a href="https://cartoguophy.com"
-                target="_blank">CartoGuophy.com</a>)
-        </span>
-    </div>
-
     <!-- App logic -->
     <script src="js/main.js"></script>
-
 </body>
 
 </html>
